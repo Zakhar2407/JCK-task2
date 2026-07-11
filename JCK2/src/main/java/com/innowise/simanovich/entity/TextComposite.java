@@ -36,6 +36,29 @@ public class TextComposite implements TextComponent {
     return type;
   }
 
+  public void replaceChildren(List<TextComponent> newChildren) {
+    components.clear();
+    components.addAll(newChildren);
+  }
+
+  public List<TextComponent> getWords() {
+    List<TextComponent> words = new ArrayList<>();
+    boolean isWord = type == ComponentType.WORD;
+
+    if (isWord) {
+      words.add(this);
+    } else {
+      for (TextComponent child : components) {
+        if (child instanceof TextComposite) {
+          TextComposite compositeChild = (TextComposite) child;
+          List<TextComponent> childWords = compositeChild.getWords();
+          words.addAll(childWords);
+        }
+      }
+    }
+    return words;
+  }
+
   @Override
   public String toOriginalString() {
     StringBuilder stringBuilder = new StringBuilder();
